@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceApp - Tutorial Developpeur</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #111130;
+            --bg-card: #1a1a3e;
+            --text-primary: #e0e0ff;
+            --text-secondary: #a0a0cc;
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
+            --accent-glow: rgba(124, 58, 237, 0.3);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --border: #2a2a5e;
+            --code-bg: #0d0d25;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 100;
+            padding: 20px 0;
+        }
+
+        .nav-logo {
+            padding: 10px 20px 30px;
+            text-align: center;
+        }
+
+        .nav-logo h2 {
+            color: var(--accent-light);
+            font-size: 1.4em;
+        }
+
+        .nav-logo span {
+            color: var(--text-secondary);
+            font-size: 0.8em;
+        }
+
+        .nav-section {
+            padding: 8px 20px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-top: 15px;
+        }
+
+        .nav a {
+            display: block;
+            padding: 8px 20px 8px 30px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav a:hover {
+            color: var(--accent-light);
+            background: var(--accent-glow);
+            border-left-color: var(--accent);
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 280px;
+            padding: 40px 60px;
+            max-width: 1000px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, var(--accent-light), #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-badges {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-purple { background: var(--accent-glow); color: var(--accent-light); border: 1px solid var(--accent); }
+        .badge-green { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .badge-yellow { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+
+        /* Sections */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: var(--accent-light);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-glow);
+        }
+
+        h3 {
+            font-size: 1.3em;
+            color: var(--text-primary);
+            margin: 30px 0 15px;
+        }
+
+        h4 {
+            font-size: 1.1em;
+            color: var(--accent-light);
+            margin: 20px 0 10px;
+        }
+
+        p { margin-bottom: 15px; color: var(--text-secondary); }
+
+        /* Code blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.88em;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: #e0e0ff;
+        }
+
+        .inline-code {
+            background: var(--code-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid var(--border);
+        }
+
+        /* Method badges */
+        .method {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 700;
+            font-family: monospace;
+            margin-right: 8px;
+        }
+
+        .method-get { background: rgba(16,185,129,0.2); color: var(--success); }
+        .method-post { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .method-put { background: rgba(245,158,11,0.2); color: var(--warning); }
+        .method-delete { background: rgba(239,68,68,0.2); color: var(--error); }
+        .method-ws { background: rgba(124,58,237,0.2); color: var(--accent-light); }
+
+        /* Endpoint card */
+        .endpoint {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px 22px;
+            margin: 12px 0;
+        }
+
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 0.95em;
+            color: var(--text-primary);
+        }
+
+        .endpoint-desc {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9em;
+        }
+
+        th {
+            background: var(--bg-card);
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        td { color: var(--text-secondary); }
+
+        /* Alert boxes */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(59,130,246,0.1);
+            border-color: #3b82f6;
+        }
+
+        .alert-warning {
+            background: rgba(245,158,11,0.1);
+            border-color: var(--warning);
+        }
+
+        .alert-success {
+            background: rgba(16,185,129,0.1);
+            border-color: var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--error);
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        /* Steps */
+        .step {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .step-content { flex: 1; }
+
+        /* Flow diagram */
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .flow-item {
+            padding: 8px 16px;
+            background: var(--accent-glow);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: var(--accent-light);
+        }
+
+        .flow-arrow {
+            color: var(--text-secondary);
+            font-size: 1.2em;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .nav { display: none; }
+            .main { margin-left: 0; padding: 20px; }
+        }
+
+        /* Syntax highlighting (basic) */
+        .kw { color: #c084fc; }
+        .str { color: #34d399; }
+        .cm { color: #6b7280; }
+        .fn { color: #60a5fa; }
+        .num { color: #fbbf24; }
+        .type { color: #f472b6; }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+    <div class="nav-logo">
+        <h2>VoiceApp</h2>
+        <span>Developer Tutorial</span>
+    </div>
+
+    <div class="nav-section">Demarrage</div>
+    <a href="#intro">Introduction</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#setup">Configuration</a>
+    <a href="#flutter-setup">Setup Flutter</a>
+
+    <div class="nav-section">Authentification</div>
+    <a href="#auth-register">Inscription</a>
+    <a href="#auth-login">Connexion</a>
+    <a href="#auth-refresh">Refresh Token</a>
+    <a href="#auth-sessions">Sessions</a>
+    <a href="#auth-2fa">2FA (TOTP)</a>
+    <a href="#auth-qr">QR Code Login</a>
+
+    <div class="nav-section">Messages Vocaux</div>
+    <a href="#msg-send">Envoyer un vocal</a>
+    <a href="#msg-inbox">Boite de reception</a>
+    <a href="#msg-listen">Ecouter (ephemere)</a>
+    <a href="#msg-delete">Supprimer</a>
+
+    <div class="nav-section">WebSocket</div>
+    <a href="#ws-connect">Connexion WSS</a>
+    <a href="#ws-events">Events</a>
+    <a href="#ws-flutter">Integration Flutter</a>
+
+    <div class="nav-section">Social</div>
+    <a href="#friends">Amis</a>
+    <a href="#stories">Stories vocales</a>
+    <a href="#reactions">Reactions</a>
+    <a href="#streaks">Streaks</a>
+    <a href="#favorites">Favoris</a>
+
+    <div class="nav-section">Autres</div>
+    <a href="#notifications">Notifications</a>
+    <a href="#users">Utilisateurs</a>
+    <a href="#recovery">Recovery</a>
+    <a href="#errors">Gestion erreurs</a>
+    <a href="#rate-limits">Rate Limits</a>
+    <a href="#complete-app">App complete</a>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>VoiceApp Developer Tutorial</h1>
+        <p>Guide complet pour creer des applications qui utilisent le serveur VoiceApp. De l'authentification aux messages ephemeres.</p>
+        <div class="hero-badges">
+            <span class="badge badge-purple">API REST</span>
+            <span class="badge badge-purple">WebSocket</span>
+            <span class="badge badge-green">HTTPS</span>
+            <span class="badge badge-yellow">v5.0.0</span>
+        </div>
+    </div>
+
+    <!-- Introduction -->
+    <section id="intro">
+        <h2>Introduction</h2>
+        <p>VoiceApp est une API de messagerie vocale ephemere. Les messages vocaux disparaissent apres ecoute (max 2 ecoutes). L'API supporte l'authentification Matrix-style, le temps reel via WebSocket, les stories vocales, les reactions, et plus.</p>
+
+        <h3>Base URL</h3>
+        <pre><code><span class="str">https://matrix.voiceapp.be</span></code></pre>
+
+        <h3>Documentation interactive</h3>
+        <table>
+            <tr><th>URL</th><th>Description</th></tr>
+            <tr><td><code>/docs</code></td><td>Swagger UI (tester les endpoints)</td></tr>
+            <tr><td><code>/redoc</code></td><td>ReDoc (documentation lisible)</td></tr>
+            <tr><td><code>/openapi.json</code></td><td>Spec OpenAPI 3.1 (JSON)</td></tr>
+        </table>
+
+        <h3>Fonctionnalites principales</h3>
+        <table>
+            <tr><th>Fonctionnalite</th><th>Description</th></tr>
+            <tr><td>Messages ephemeres</td><td>2 ecoutes max, puis auto-suppression</td></tr>
+            <tr><td>Auth Matrix-style</td><td>Tokens opaques, multi-device, sessions</td></tr>
+            <tr><td>WebSocket</td><td>Presence, typing, read receipts en temps reel</td></tr>
+            <tr><td>Stories vocales</td><td>Audio ephemere 24h pour les amis</td></tr>
+            <tr><td>Reactions</td><td>Emojis sur les messages vocaux</td></tr>
+            <tr><td>Streaks</td><td>Jours consecutifs d'echange avec un ami</td></tr>
+            <tr><td>2FA / TOTP</td><td>Authentification a deux facteurs</td></tr>
+        </table>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture">
+        <h2>Architecture</h2>
+        <pre><code><span class="cm">// Architecture du serveur VoiceApp</span>
+
+Client (Flutter/Web/Mobile)
+    |
+    |--- HTTPS (REST API) ----&gt; Nginx (443) ----&gt; FastAPI (8000)
+    |--- WSS (WebSocket) -----&gt; Nginx (443) ----&gt; FastAPI /ws
+    |
+FastAPI
+    |--- PostgreSQL  (donnees utilisateurs, messages, amis)
+    |--- Redis       (cache, sessions, pub/sub, presence)
+    |--- MinIO/S3    (stockage audio .opus)</code></pre>
+
+        <div class="alert alert-info">
+            <strong>Protocole</strong>
+            Toutes les communications passent par HTTPS/WSS (TLS 1.2+, HTTP/2). Aucun endpoint HTTP non-securise.
+        </div>
+    </section>
+
+    <!-- Setup -->
+    <section id="setup">
+        <h2>Configuration</h2>
+
+        <h3>Headers requis</h3>
+        <p>Toutes les requetes authentifiees doivent inclure le header <code class="inline-code">Authorization</code> :</p>
+        <pre><code><span class="cm">// Pour les requetes JSON</span>
+Authorization: Bearer &lt;access_token&gt;
+Content-Type: application/json
+
+<span class="cm">// Pour les uploads audio</span>
+Authorization: Bearer &lt;access_token&gt;
+Content-Type: multipart/form-data</code></pre>
+
+        <h3>Format de reponse</h3>
+        <p>Toutes les reponses sont en JSON. En cas d'erreur :</p>
+        <pre><code>{
+  <span class="str">"detail"</span>: <span class="str">"Message d'erreur explicite"</span>
+}</code></pre>
+    </section>
+
+    <!-- Flutter Setup -->
+    <section id="flutter-setup">
+        <h2>Setup Flutter</h2>
+
+        <h3>Dependances requises</h3>
+        <p>Ajoute ces packages dans ton <code class="inline-code">pubspec.yaml</code> :</p>
+        <pre><code><span class="cm"># pubspec.yaml</span>
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0                    <span class="cm"># Requetes HTTP</span>
+  web_socket_channel: ^3.0.0      <span class="cm"># WebSocket</span>
+  audioplayers: ^6.0.0            <span class="cm"># Lecture audio</span>
+  record: ^6.0.0                  <span class="cm"># Enregistrement audio</span>
+  shared_preferences: ^2.3.0      <span class="cm"># Stockage local tokens</span>
+  path_provider: ^2.1.0           <span class="cm"># Chemin fichiers</span>
+  permission_handler: ^11.3.0     <span class="cm"># Permissions micro</span></code></pre>
+
+        <h3>Service API de base</h3>
+        <pre><code><span class="cm">// lib/services/api_service.dart</span>
+
+<span class="kw">import</span> <span class="str">'dart:convert'</span>;
+<span class="kw">import</span> <span class="str">'package:http/http.dart'</span> <span class="kw">as</span> http;
+<span class="kw">import</span> <span class="str">'package:shared_preferences/shared_preferences.dart'</span>;
+
+<span class="kw">class</span> <span class="type">ApiService</span> {
+  <span class="kw">static const</span> baseUrl = <span class="str">'https://matrix.voiceapp.be'</span>;
+
+  String? _accessToken;
+  String? _refreshToken;
+  String? _deviceId;
+
+  <span class="cm">// Singleton</span>
+  <span class="kw">static final</span> ApiService _instance = ApiService._internal();
+  <span class="kw">factory</span> ApiService() =&gt; _instance;
+  ApiService._internal();
+
+  <span class="cm">// Headers avec auth</span>
+  Map&lt;String, String&gt; <span class="kw">get</span> <span class="fn">headers</span> =&gt; {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+    <span class="kw">if</span> (_accessToken != <span class="kw">null</span>)
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer $_accessToken'</span>,
+  };
+
+  <span class="cm">// Sauvegarder les tokens</span>
+  Future&lt;<span class="kw">void</span>&gt; <span class="fn">saveTokens</span>(String access, String refresh) <span class="kw">async</span> {
+    _accessToken = access;
+    _refreshToken = refresh;
+    <span class="kw">final</span> prefs = <span class="kw">await</span> SharedPreferences.getInstance();
+    <span class="kw">await</span> prefs.setString(<span class="str">'access_token'</span>, access);
+    <span class="kw">await</span> prefs.setString(<span class="str">'refresh_token'</span>, refresh);
+  }
+
+  <span class="cm">// Charger les tokens au demarrage</span>
+  Future&lt;<span class="kw">void</span>&gt; <span class="fn">loadTokens</span>() <span class="kw">async</span> {
+    <span class="kw">final</span> prefs = <span class="kw">await</span> SharedPreferences.getInstance();
+    _accessToken = prefs.getString(<span class="str">'access_token'</span>);
+    _refreshToken = prefs.getString(<span class="str">'refresh_token'</span>);
+    _deviceId = prefs.getString(<span class="str">'device_id'</span>);
+  }
+
+  <span class="cm">// Requete GET generique avec auto-refresh</span>
+  Future&lt;Map&lt;String, <span class="kw">dynamic</span>&gt;&gt; <span class="fn">get</span>(String path) <span class="kw">async</span> {
+    <span class="kw">var</span> response = <span class="kw">await</span> http.get(
+      Uri.parse(<span class="str">'$baseUrl$path'</span>),
+      headers: headers,
+    );
+
+    <span class="cm">// Auto-refresh si 401</span>
+    <span class="kw">if</span> (response.statusCode == <span class="num">401</span> && _refreshToken != <span class="kw">null</span>) {
+      <span class="kw">final</span> refreshed = <span class="kw">await</span> refreshTokens();
+      <span class="kw">if</span> (refreshed) {
+        response = <span class="kw">await</span> http.get(
+          Uri.parse(<span class="str">'$baseUrl$path'</span>),
+          headers: headers,
+        );
+      }
+    }
+    <span class="kw">return</span> jsonDecode(response.body);
+  }
+
+  <span class="cm">// Requete POST generique</span>
+  Future&lt;Map&lt;String, <span class="kw">dynamic</span>&gt;&gt; <span class="fn">post</span>(String path, Map body) <span class="kw">async</span> {
+    <span class="kw">var</span> response = <span class="kw">await</span> http.post(
+      Uri.parse(<span class="str">'$baseUrl$path'</span>),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    <span class="kw">if</span> (response.statusCode == <span class="num">401</span> && _refreshToken != <span class="kw">null</span>) {
+      <span class="kw">final</span> refreshed = <span class="kw">await</span> refreshTokens();
+      <span class="kw">if</span> (refreshed) {
+        response = <span class="kw">await</span> http.post(
+          Uri.parse(<span class="str">'$baseUrl$path'</span>),
+          headers: headers,
+          body: jsonEncode(body),
+        );
+      }
+    }
+    <span class="kw">return</span> jsonDecode(response.body);
+  }
+}</code></pre>
+    </section>
+
+    <!-- Auth Register -->
+    <section id="auth-register">
+        <h2>Inscription</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/register</span>
+            <p class="endpoint-desc">Creer un nouveau compte utilisateur</p>
+        </div>
+
+        <h4>Parametres (JSON body)</h4>
+        <table>
+            <tr><th>Champ</th><th>Type</th><th>Requis</th><th>Description</th></tr>
+            <tr><td><code>username</code></td><td>string</td><td>Oui</td><td>Nom d'utilisateur unique</td></tr>
+            <tr><td><code>email</code></td><td>string</td><td>Oui</td><td>Email unique</td></tr>
+            <tr><td><code>password</code></td><td>string</td><td>Oui</td><td>Mot de passe (min 8 caracteres)</td></tr>
+            <tr><td><code>display_name</code></td><td>string</td><td>Non</td><td>Nom affiche</td></tr>
+            <tr><td><code>device_id</code></td><td>string</td><td>Non</td><td>Identifiant de l'appareil</td></tr>
+        </table>
+
+        <h4>Exemple de requete</h4>
+        <pre><code>curl -X POST https://matrix.voiceapp.be/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "jean",
+    "email": "jean@mail.com",
+    "password": "MonMotDePasse123",
+    "display_name": "Jean Dupont",
+    "device_id": "flutter-android-abc123"
+  }'</code></pre>
+
+        <h4>Reponse (201 Created)</h4>
+        <pre><code>{
+  <span class="str">"access_token"</span>: <span class="str">"syt_xxxxxxxxxxxxxxxxxxxx"</span>,
+  <span class="str">"refresh_token"</span>: <span class="str">"syr_xxxxxxxxxxxxxxxxxxxx"</span>,
+  <span class="str">"token_type"</span>: <span class="str">"bearer"</span>,
+  <span class="str">"expires_in"</span>: <span class="num">2592000</span>,
+  <span class="str">"user_id"</span>: <span class="str">"uuid-..."</span>,
+  <span class="str">"username"</span>: <span class="str">"jean"</span>,
+  <span class="str">"device_id"</span>: <span class="str">"flutter-android-abc123"</span>
+}</code></pre>
+
+        <h4>Flutter</h4>
+        <pre><code><span class="cm">// lib/services/auth_service.dart</span>
+
+Future&lt;Map&lt;String, <span class="kw">dynamic</span>&gt;&gt; <span class="fn">register</span>({
+  <span class="kw">required</span> String username,
+  <span class="kw">required</span> String email,
+  <span class="kw">required</span> String password,
+  String? displayName,
+}) <span class="kw">async</span> {
+  <span class="kw">final</span> api = ApiService();
+  <span class="kw">final</span> deviceId = <span class="kw">await</span> _getOrCreateDeviceId();
+
+  <span class="kw">final</span> response = <span class="kw">await</span> http.post(
+    Uri.parse(<span class="str">'${ApiService.baseUrl}/api/v1/auth/register'</span>),
+    headers: {<span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>},
+    body: jsonEncode({
+      <span class="str">'username'</span>: username,
+      <span class="str">'email'</span>: email,
+      <span class="str">'password'</span>: password,
+      <span class="str">'display_name'</span>: displayName,
+      <span class="str">'device_id'</span>: deviceId,
+    }),
+  );
+
+  <span class="kw">if</span> (response.statusCode == <span class="num">201</span>) {
+    <span class="kw">final</span> data = jsonDecode(response.body);
+    <span class="kw">await</span> api.saveTokens(data[<span class="str">'access_token'</span>], data[<span class="str">'refresh_token'</span>]);
+    <span class="kw">return</span> data;
+  }
+  <span class="kw">throw</span> Exception(jsonDecode(response.body)[<span class="str">'detail'</span>]);
+}
+
+Future&lt;String&gt; <span class="fn">_getOrCreateDeviceId</span>() <span class="kw">async</span> {
+  <span class="kw">final</span> prefs = <span class="kw">await</span> SharedPreferences.getInstance();
+  <span class="kw">var</span> id = prefs.getString(<span class="str">'device_id'</span>);
+  <span class="kw">if</span> (id == <span class="kw">null</span>) {
+    id = <span class="str">'flutter-${DateTime.now().millisecondsSinceEpoch}'</span>;
+    <span class="kw">await</span> prefs.setString(<span class="str">'device_id'</span>, id);
+  }
+  <span class="kw">return</span> id;
+}</code></pre>
+
+        <div class="alert alert-warning">
+            <strong>Rate Limit</strong>
+            L'endpoint register est limite a 5 requetes/minute par IP pour eviter les abus.
+        </div>
+    </section>
+
+    <!-- Auth Login -->
+    <section id="auth-login">
+        <h2>Connexion</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/login</span>
+            <p class="endpoint-desc">Se connecter avec email ou username</p>
+        </div>
+
+        <h4>Parametres</h4>
+        <table>
+            <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+            <tr><td><code>login</code></td><td>string</td><td>Email <strong>ou</strong> username</td></tr>
+            <tr><td><code>password</code></td><td>string</td><td>Mot de passe</td></tr>
+            <tr><td><code>device_id</code></td><td>string</td><td>Identifiant appareil</td></tr>
+        </table>
+
+        <h4>Flutter</h4>
+        <pre><code>Future&lt;Map&gt; <span class="fn">login</span>(String login, String password) <span class="kw">async</span> {
+  <span class="kw">final</span> response = <span class="kw">await</span> http.post(
+    Uri.parse(<span class="str">'${ApiService.baseUrl}/api/v1/auth/login'</span>),
+    headers: {<span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>},
+    body: jsonEncode({
+      <span class="str">'login'</span>: login,
+      <span class="str">'password'</span>: password,
+      <span class="str">'device_id'</span>: <span class="kw">await</span> _getOrCreateDeviceId(),
+    }),
+  );
+
+  <span class="kw">final</span> data = jsonDecode(response.body);
+
+  <span class="kw">if</span> (response.statusCode == <span class="num">200</span>) {
+    <span class="cm">// Connexion reussie</span>
+    <span class="kw">await</span> ApiService().saveTokens(
+      data[<span class="str">'access_token'</span>],
+      data[<span class="str">'refresh_token'</span>],
+    );
+    <span class="kw">return</span> data;
+  }
+
+  <span class="kw">if</span> (response.statusCode == <span class="num">202</span>) {
+    <span class="cm">// 2FA requis - afficher l'ecran de code</span>
+    <span class="kw">return</span> data; <span class="cm">// {"requires_2fa": true, "temp_token": "..."}</span>
+  }
+
+  <span class="kw">throw</span> Exception(data[<span class="str">'detail'</span>] ?? <span class="str">'Erreur de connexion'</span>);
+}</code></pre>
+
+        <div class="alert alert-info">
+            <strong>Securite</strong>
+            Apres 5 tentatives echouees, le compte est verrouille pendant 15 minutes (configurable).
+        </div>
+    </section>
+
+    <!-- Auth Refresh -->
+    <section id="auth-refresh">
+        <h2>Refresh Token</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/refresh</span>
+            <p class="endpoint-desc">Renouveler le access_token avec le refresh_token</p>
+        </div>
+
+        <pre><code>Future&lt;<span class="kw">bool</span>&gt; <span class="fn">refreshTokens</span>() <span class="kw">async</span> {
+  <span class="kw">final</span> response = <span class="kw">await</span> http.post(
+    Uri.parse(<span class="str">'${ApiService.baseUrl}/api/v1/auth/refresh'</span>),
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer $_accessToken'</span>,
+    },
+    body: jsonEncode({
+      <span class="str">'refresh_token'</span>: _refreshToken,
+      <span class="str">'device_id'</span>: _deviceId,
+    }),
+  );
+
+  <span class="kw">if</span> (response.statusCode == <span class="num">200</span>) {
+    <span class="kw">final</span> data = jsonDecode(response.body);
+    <span class="kw">await</span> saveTokens(data[<span class="str">'access_token'</span>], data[<span class="str">'refresh_token'</span>]);
+    <span class="kw">return true</span>;
+  }
+  <span class="kw">return false</span>; <span class="cm">// Redirect to login screen</span>
+}</code></pre>
+    </section>
+
+    <!-- Auth Sessions -->
+    <section id="auth-sessions">
+        <h2>Sessions & Multi-Device</h2>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/auth/sessions</span>
+            <p class="endpoint-desc">Lister toutes les sessions actives</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/auth/sessions/{session_id}</span>
+            <p class="endpoint-desc">Revoquer une session specifique</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/logout</span>
+            <p class="endpoint-desc">Deconnecter la session actuelle</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/logout-all</span>
+            <p class="endpoint-desc">Deconnecter TOUTES les sessions (tous les appareils)</p>
+        </div>
+
+        <pre><code><span class="cm">// Lister les sessions</span>
+<span class="kw">final</span> sessions = <span class="kw">await</span> api.get(<span class="str">'/api/v1/auth/sessions'</span>);
+<span class="cm">// Retourne une liste de sessions avec device_id, ip, last_used_at, is_current</span>
+
+<span class="cm">// Revoquer une session distante</span>
+<span class="kw">await</span> http.delete(
+  Uri.parse(<span class="str">'$baseUrl/api/v1/auth/sessions/$sessionId'</span>),
+  headers: api.headers,
+);
+
+<span class="cm">// Logout complet (tous les appareils)</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/auth/logout-all'</span>, {});</code></pre>
+    </section>
+
+    <!-- 2FA -->
+    <section id="auth-2fa">
+        <h2>2FA (Authentification a 2 facteurs)</h2>
+
+        <div class="flow">
+            <span class="flow-item">1. Setup TOTP</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">2. Scanner QR</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">3. Enable avec code</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">4. Login + code TOTP</span>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/2fa/setup</span>
+            <p class="endpoint-desc">Obtenir le secret TOTP + QR code</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/2fa/enable</span>
+            <p class="endpoint-desc">Activer la 2FA avec un code valide</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/2fa/verify</span>
+            <p class="endpoint-desc">Verifier le code 2FA au login (utilise temp_token)</p>
+        </div>
+
+        <pre><code><span class="cm">// 1. Demander le setup 2FA</span>
+<span class="kw">final</span> setup = <span class="kw">await</span> api.post(<span class="str">'/api/v1/2fa/setup'</span>, {});
+<span class="cm">// Retourne: { secret, qr_code_base64, provisioning_uri }</span>
+
+<span class="cm">// 2. Afficher le QR code pour l'app TOTP (Google Authenticator, etc.)</span>
+Image.memory(base64Decode(setup[<span class="str">'qr_code_base64'</span>]));
+
+<span class="cm">// 3. Activer avec le premier code</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/2fa/enable'</span>, {<span class="str">'code'</span>: <span class="str">'123456'</span>});
+
+<span class="cm">// 4. Au prochain login, si 2FA active, on recoit un temp_token</span>
+<span class="cm">//    Puis on verifie le code :</span>
+<span class="kw">final</span> result = <span class="kw">await</span> http.post(
+  Uri.parse(<span class="str">'$baseUrl/api/v1/2fa/verify'</span>),
+  headers: {<span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>},
+  body: jsonEncode({
+    <span class="str">'temp_token'</span>: tempToken,
+    <span class="str">'code'</span>: codeFromApp,
+    <span class="str">'device_id'</span>: deviceId,
+  }),
+);
+<span class="cm">// Retourne: access_token + refresh_token comme un login normal</span></code></pre>
+    </section>
+
+    <!-- QR Code Login -->
+    <section id="auth-qr">
+        <h2>QR Code Login (Multi-Device)</h2>
+
+        <div class="flow">
+            <span class="flow-item">Appareil A: generer QR</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">Appareil B: scanner</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">Appareil B: valider</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">Appareil A: recoit token</span>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/qr/generate</span>
+            <p class="endpoint-desc">Generer un QR code de login (expire en 5 min)</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/qr/validate</span>
+            <p class="endpoint-desc">Valider depuis l'appareil deja connecte</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/auth/qr/check</span>
+            <p class="endpoint-desc">L'appareil qui a scanne recoit son token</p>
+        </div>
+    </section>
+
+    <!-- Send Message -->
+    <section id="msg-send">
+        <h2>Envoyer un Message Vocal</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/messages/send</span>
+            <p class="endpoint-desc">Envoyer un message vocal a un ou plusieurs destinataires</p>
+        </div>
+
+        <h4>Parametres (multipart/form-data)</h4>
+        <table>
+            <tr><th>Champ</th><th>Type</th><th>Description</th></tr>
+            <tr><td><code>file</code></td><td>File</td><td>Fichier audio</td></tr>
+            <tr><td><code>recipient_ids</code></td><td>string</td><td>JSON array d'IDs destinataires</td></tr>
+        </table>
+
+        <h4>Formats audio acceptes</h4>
+        <table>
+            <tr><th>Extension</th><th>MIME Type</th></tr>
+            <tr><td>.wav</td><td>audio/wav, audio/wave</td></tr>
+            <tr><td>.mp3</td><td>audio/mpeg, audio/mp3</td></tr>
+            <tr><td>.ogg</td><td>audio/ogg</td></tr>
+            <tr><td>.opus</td><td>audio/opus</td></tr>
+            <tr><td>.webm</td><td>audio/webm</td></tr>
+            <tr><td>.aac</td><td>audio/aac</td></tr>
+            <tr><td>.m4a</td><td>audio/m4a, audio/x-m4a</td></tr>
+        </table>
+
+        <h4>Limites</h4>
+        <table>
+            <tr><th>Parametre</th><th>Valeur</th></tr>
+            <tr><td>Taille max</td><td><strong>10 Mo</strong></td></tr>
+            <tr><td>Duree min</td><td><strong>1 seconde</strong></td></tr>
+            <tr><td>Duree max</td><td><strong>120 secondes</strong></td></tr>
+            <tr><td>Max destinataires</td><td><strong>20 par message</strong></td></tr>
+            <tr><td>Rate limit</td><td><strong>20 messages/minute</strong></td></tr>
+            <tr><td>Max destinataires uniques/heure</td><td><strong>50</strong></td></tr>
+        </table>
+
+        <div class="alert alert-info">
+            <strong>Conversion automatique</strong>
+            Le serveur convertit automatiquement l'audio en <strong>Opus 32kbps mono</strong> pour reduire la taille. Tu peux envoyer n'importe quel format supporte.
+        </div>
+
+        <h4>Flutter - Enregistrer et envoyer</h4>
+        <pre><code><span class="cm">// lib/services/message_service.dart</span>
+
+<span class="kw">import</span> <span class="str">'package:record/record.dart'</span>;
+
+<span class="kw">class</span> <span class="type">MessageService</span> {
+  <span class="kw">final</span> _recorder = AudioRecorder();
+  <span class="kw">final</span> _api = ApiService();
+
+  <span class="cm">// Demarrer l'enregistrement</span>
+  Future&lt;<span class="kw">void</span>&gt; <span class="fn">startRecording</span>() <span class="kw">async</span> {
+    <span class="kw">if</span> (<span class="kw">await</span> _recorder.hasPermission()) {
+      <span class="kw">final</span> dir = <span class="kw">await</span> getTemporaryDirectory();
+      <span class="kw">await</span> _recorder.start(
+        RecordConfig(encoder: AudioEncoder.aacLc),
+        path: <span class="str">'${dir.path}/voice_msg.m4a'</span>,
+      );
+    }
+  }
+
+  <span class="cm">// Arreter et envoyer</span>
+  Future&lt;Map&gt; <span class="fn">stopAndSend</span>(List&lt;String&gt; recipientIds) <span class="kw">async</span> {
+    <span class="kw">final</span> path = <span class="kw">await</span> _recorder.stop();
+    <span class="kw">if</span> (path == <span class="kw">null</span>) <span class="kw">throw</span> Exception(<span class="str">'Enregistrement echoue'</span>);
+
+    <span class="kw">final</span> request = http.MultipartRequest(
+      <span class="str">'POST'</span>,
+      Uri.parse(<span class="str">'${ApiService.baseUrl}/api/v1/messages/send'</span>),
+    );
+    request.headers[<span class="str">'Authorization'</span>] = <span class="str">'Bearer ${_api.accessToken}'</span>;
+    request.files.add(
+      <span class="kw">await</span> http.MultipartFile.fromPath(<span class="str">'file'</span>, path),
+    );
+    request.fields[<span class="str">'recipient_ids'</span>] = jsonEncode(recipientIds);
+
+    <span class="kw">final</span> response = <span class="kw">await</span> request.send();
+    <span class="kw">final</span> body = <span class="kw">await</span> response.stream.bytesToString();
+
+    <span class="kw">if</span> (response.statusCode == <span class="num">201</span>) {
+      <span class="kw">return</span> jsonDecode(body);
+    }
+    <span class="kw">throw</span> Exception(jsonDecode(body)[<span class="str">'detail'</span>]);
+  }
+}</code></pre>
+    </section>
+
+    <!-- Inbox -->
+    <section id="msg-inbox">
+        <h2>Boite de Reception</h2>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/messages/inbox</span>
+            <p class="endpoint-desc">Recuperer les messages recus</p>
+        </div>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/messages/sent</span>
+            <p class="endpoint-desc">Recuperer les messages envoyes</p>
+        </div>
+
+        <pre><code><span class="cm">// Recuperer l'inbox</span>
+<span class="kw">final</span> inbox = <span class="kw">await</span> api.get(<span class="str">'/api/v1/messages/inbox'</span>);
+
+<span class="cm">// Reponse :</span>
+{
+  <span class="str">"messages"</span>: [
+    {
+      <span class="str">"id"</span>: <span class="str">"msg-uuid"</span>,
+      <span class="str">"sender_id"</span>: <span class="str">"user-uuid"</span>,
+      <span class="str">"sender_username"</span>: <span class="str">"marie"</span>,
+      <span class="str">"duration_seconds"</span>: <span class="num">8.5</span>,
+      <span class="str">"listen_count"</span>: <span class="num">0</span>,
+      <span class="str">"max_listens"</span>: <span class="num">2</span>,
+      <span class="str">"is_listened"</span>: <span class="kw">false</span>,
+      <span class="str">"created_at"</span>: <span class="str">"2026-04-09T20:00:00Z"</span>,
+      <span class="str">"expires_at"</span>: <span class="str">"2026-04-09T21:00:00Z"</span>
+    }
+  ],
+  <span class="str">"total"</span>: <span class="num">1</span>
+}</code></pre>
+    </section>
+
+    <!-- Listen -->
+    <section id="msg-listen">
+        <h2>Ecouter un Message (Ephemere)</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/messages/{message_id}/listen</span>
+            <p class="endpoint-desc">Obtenir l'URL audio pre-signee et incrementer le compteur d'ecoutes</p>
+        </div>
+
+        <div class="alert alert-danger">
+            <strong>Messages ephemeres</strong>
+            Chaque message peut etre ecoute <strong>maximum 2 fois</strong>. Apres la 2eme ecoute, le message est <strong>supprime definitivement</strong> du serveur. L'URL audio (<code>audio_url</code>) expire apres <strong>5 minutes</strong>.
+        </div>
+
+        <div class="flow">
+            <span class="flow-item">POST /listen</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">audio_url (5 min)</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">Streamer/telecharger</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">2eme ecoute = suppression</span>
+        </div>
+
+        <h4>Reponse</h4>
+        <pre><code>{
+  <span class="str">"id"</span>: <span class="str">"msg-uuid"</span>,
+  <span class="str">"audio_url"</span>: <span class="str">"https://...?X-Amz-Signature=..."</span>,
+  <span class="str">"listen_count"</span>: <span class="num">1</span>,
+  <span class="str">"max_listens"</span>: <span class="num">2</span>,
+  <span class="str">"is_expired"</span>: <span class="kw">false</span>,
+  <span class="str">"remaining_listens"</span>: <span class="num">1</span>
+}</code></pre>
+
+        <h4>Flutter - Ecouter un message</h4>
+        <pre><code><span class="kw">import</span> <span class="str">'package:audioplayers/audioplayers.dart'</span>;
+
+Future&lt;<span class="kw">void</span>&gt; <span class="fn">listenToMessage</span>(String messageId) <span class="kw">async</span> {
+  <span class="cm">// 1. Obtenir l'URL pre-signee</span>
+  <span class="kw">final</span> data = <span class="kw">await</span> api.post(
+    <span class="str">'/api/v1/messages/$messageId/listen'</span>, {},
+  );
+
+  <span class="kw">final</span> audioUrl = data[<span class="str">'audio_url'</span>];
+  <span class="kw">final</span> remaining = data[<span class="str">'remaining_listens'</span>];
+
+  <span class="cm">// 2. Jouer l'audio IMMEDIATEMENT (URL expire dans 5 min)</span>
+  <span class="kw">final</span> player = AudioPlayer();
+  <span class="kw">await</span> player.play(UrlSource(audioUrl));
+
+  <span class="cm">// 3. Afficher le compteur</span>
+  <span class="kw">if</span> (remaining == <span class="num">0</span>) {
+    <span class="cm">// Derniere ecoute ! Le message sera supprime</span>
+    showSnackBar(<span class="str">'Derniere ecoute - le message va disparaitre'</span>);
+  } <span class="kw">else</span> {
+    showSnackBar(<span class="str">'Encore $remaining ecoute(s) restante(s)'</span>);
+  }
+}</code></pre>
+    </section>
+
+    <!-- Delete -->
+    <section id="msg-delete">
+        <h2>Supprimer un Message</h2>
+
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/messages/{message_id}</span>
+            <p class="endpoint-desc">Supprimer un message (expediteur seulement)</p>
+        </div>
+    </section>
+
+    <!-- WebSocket Connect -->
+    <section id="ws-connect">
+        <h2>WebSocket - Connexion</h2>
+
+        <div class="endpoint">
+            <span class="method method-ws">WSS</span>
+            <span class="endpoint-path">wss://matrix.voiceapp.be/ws?token=&lt;access_token&gt;</span>
+            <p class="endpoint-desc">Connexion WebSocket pour le temps reel</p>
+        </div>
+
+        <div class="alert alert-info">
+            <strong>Pourquoi pas dans l'OpenAPI ?</strong>
+            Le WebSocket n'apparait pas dans /openapi.json car le standard OpenAPI ne supporte pas nativement les WebSockets. Le endpoint existe bien a <code>/ws</code>.
+        </div>
+
+        <h4>Authentification</h4>
+        <p>Deux methodes :</p>
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <strong>Query param (recommande)</strong> : <code class="inline-code">wss://matrix.voiceapp.be/ws?token=syt_xxx</code>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <strong>Premier message</strong> : Envoyer <code class="inline-code">{"token": "syt_xxx"}</code> dans les 5 secondes apres connexion
+            </div>
+        </div>
+
+        <h4>Heartbeat</h4>
+        <p>Le serveur envoie un <code class="inline-code">ping</code> toutes les <strong>30 secondes</strong>. Tu dois repondre avec <code class="inline-code">pong</code> dans les <strong>10 secondes</strong>, sinon la connexion est fermee.</p>
+
+        <h4>Protection</h4>
+        <table>
+            <tr><th>Parametre</th><th>Valeur</th></tr>
+            <tr><td>Max connexions par user</td><td>3</td></tr>
+            <tr><td>Heartbeat interval</td><td>30s</td></tr>
+            <tr><td>Heartbeat timeout</td><td>10s</td></tr>
+            <tr><td>Flood limit</td><td>30 events/seconde</td></tr>
+        </table>
+    </section>
+
+    <!-- WebSocket Events -->
+    <section id="ws-events">
+        <h2>WebSocket - Events</h2>
+
+        <h3>Events recus (serveur &rarr; client)</h3>
+        <table>
+            <tr><th>Type</th><th>Description</th><th>Champs</th></tr>
+            <tr><td><code>connected</code></td><td>Connexion confirmee</td><td>user_id, heartbeat_interval</td></tr>
+            <tr><td><code>ping</code></td><td>Heartbeat (repondre pong)</td><td>timestamp</td></tr>
+            <tr><td><code>presence</code></td><td>Ami en ligne/hors ligne</td><td>user_id, is_online</td></tr>
+            <tr><td><code>typing</code></td><td>Ami tape/enregistre</td><td>user_id</td></tr>
+            <tr><td><code>stop_typing</code></td><td>Arrete de taper</td><td>user_id</td></tr>
+            <tr><td><code>recording</code></td><td>Ami enregistre un vocal</td><td>user_id, is_recording</td></tr>
+            <tr><td><code>read_receipt</code></td><td>Message lu</td><td>user_id, message_id</td></tr>
+            <tr><td><code>listened</code></td><td>Vocal ecoute</td><td>user_id, message_id, listen_count</td></tr>
+            <tr><td><code>new_message</code></td><td>Nouveau message recu</td><td>message data</td></tr>
+            <tr><td><code>friend_request</code></td><td>Demande d'ami</td><td>user_id, username</td></tr>
+            <tr><td><code>session_replaced</code></td><td>Deconnecte (autre appareil)</td><td>message</td></tr>
+            <tr><td><code>error</code></td><td>Erreur (flood, etc.)</td><td>message, code</td></tr>
+        </table>
+
+        <h3>Events envoyes (client &rarr; serveur)</h3>
+        <table>
+            <tr><th>Type</th><th>Description</th><th>Champs requis</th></tr>
+            <tr><td><code>pong</code></td><td>Reponse heartbeat</td><td>aucun</td></tr>
+            <tr><td><code>typing</code></td><td>Indicateur saisie</td><td>target_id</td></tr>
+            <tr><td><code>stop_typing</code></td><td>Fin saisie</td><td>target_id</td></tr>
+            <tr><td><code>recording</code></td><td>Enregistrement en cours</td><td>target_id, is_recording</td></tr>
+            <tr><td><code>read_receipt</code></td><td>Accuse lecture</td><td>target_id, message_id</td></tr>
+            <tr><td><code>listened</code></td><td>Vocal ecoute</td><td>target_id, message_id, listen_count</td></tr>
+        </table>
+    </section>
+
+    <!-- WebSocket Flutter -->
+    <section id="ws-flutter">
+        <h2>WebSocket - Integration Flutter</h2>
+
+        <pre><code><span class="cm">// lib/services/websocket_service.dart</span>
+
+<span class="kw">import</span> <span class="str">'dart:async'</span>;
+<span class="kw">import</span> <span class="str">'dart:convert'</span>;
+<span class="kw">import</span> <span class="str">'package:web_socket_channel/web_socket_channel.dart'</span>;
+
+<span class="kw">class</span> <span class="type">WebSocketService</span> {
+  WebSocketChannel? _channel;
+  Timer? _reconnectTimer;
+  <span class="kw">bool</span> _isConnected = <span class="kw">false</span>;
+
+  <span class="cm">// Callbacks pour l'UI</span>
+  Function(String userId, <span class="kw">bool</span> isOnline)? onPresence;
+  Function(String userId)? onTyping;
+  Function(String userId)? onStopTyping;
+  Function(String userId, <span class="kw">bool</span> isRecording)? onRecording;
+  Function(Map&lt;String, <span class="kw">dynamic</span>&gt;)? onNewMessage;
+  Function(Map&lt;String, <span class="kw">dynamic</span>&gt;)? onFriendRequest;
+  Function(String messageId, <span class="kw">int</span> count)? onListened;
+
+  <span class="cm">/// Se connecter au WebSocket</span>
+  <span class="kw">void</span> <span class="fn">connect</span>(String accessToken) {
+    _channel = WebSocketChannel.connect(
+      Uri.parse(<span class="str">'wss://matrix.voiceapp.be/ws?token=$accessToken'</span>),
+    );
+    _isConnected = <span class="kw">true</span>;
+
+    _channel!.stream.listen(
+      (data) =&gt; _handleMessage(jsonDecode(data)),
+      onDone: () {
+        _isConnected = <span class="kw">false</span>;
+        _scheduleReconnect(accessToken);
+      },
+      onError: (e) {
+        _isConnected = <span class="kw">false</span>;
+        _scheduleReconnect(accessToken);
+      },
+    );
+  }
+
+  <span class="cm">/// Gerer les messages recus</span>
+  <span class="kw">void</span> <span class="fn">_handleMessage</span>(Map&lt;String, <span class="kw">dynamic</span>&gt; msg) {
+    <span class="kw">switch</span> (msg[<span class="str">'type'</span>]) {
+      <span class="kw">case</span> <span class="str">'ping'</span>:
+        _channel?.sink.add(jsonEncode({<span class="str">'type'</span>: <span class="str">'pong'</span>}));
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'presence'</span>:
+        onPresence?.call(msg[<span class="str">'user_id'</span>], msg[<span class="str">'is_online'</span>]);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'typing'</span>:
+        onTyping?.call(msg[<span class="str">'user_id'</span>]);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'stop_typing'</span>:
+        onStopTyping?.call(msg[<span class="str">'user_id'</span>]);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'recording'</span>:
+        onRecording?.call(msg[<span class="str">'user_id'</span>], msg[<span class="str">'is_recording'</span>]);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'new_message'</span>:
+        onNewMessage?.call(msg);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'friend_request'</span>:
+        onFriendRequest?.call(msg);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'listened'</span>:
+        onListened?.call(msg[<span class="str">'message_id'</span>], msg[<span class="str">'listen_count'</span>]);
+        <span class="kw">break</span>;
+
+      <span class="kw">case</span> <span class="str">'session_replaced'</span>:
+        <span class="cm">// Deconnecte ! Afficher alerte et rediriger au login</span>
+        _isConnected = <span class="kw">false</span>;
+        <span class="kw">break</span>;
+    }
+  }
+
+  <span class="cm">/// Envoyer un indicateur "typing"</span>
+  <span class="kw">void</span> <span class="fn">sendTyping</span>(String targetId) {
+    _send({<span class="str">'type'</span>: <span class="str">'typing'</span>, <span class="str">'target_id'</span>: targetId});
+  }
+
+  <span class="cm">/// Envoyer "stop_typing"</span>
+  <span class="kw">void</span> <span class="fn">sendStopTyping</span>(String targetId) {
+    _send({<span class="str">'type'</span>: <span class="str">'stop_typing'</span>, <span class="str">'target_id'</span>: targetId});
+  }
+
+  <span class="cm">/// Envoyer indicateur "recording"</span>
+  <span class="kw">void</span> <span class="fn">sendRecording</span>(String targetId, <span class="kw">bool</span> isRecording) {
+    _send({
+      <span class="str">'type'</span>: <span class="str">'recording'</span>,
+      <span class="str">'target_id'</span>: targetId,
+      <span class="str">'is_recording'</span>: isRecording,
+    });
+  }
+
+  <span class="cm">/// Envoyer un accuse de lecture</span>
+  <span class="kw">void</span> <span class="fn">sendReadReceipt</span>(String targetId, String messageId) {
+    _send({
+      <span class="str">'type'</span>: <span class="str">'read_receipt'</span>,
+      <span class="str">'target_id'</span>: targetId,
+      <span class="str">'message_id'</span>: messageId,
+    });
+  }
+
+  <span class="kw">void</span> <span class="fn">_send</span>(Map&lt;String, <span class="kw">dynamic</span>&gt; data) {
+    <span class="kw">if</span> (_isConnected) {
+      _channel?.sink.add(jsonEncode(data));
+    }
+  }
+
+  <span class="kw">void</span> <span class="fn">_scheduleReconnect</span>(String token) {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(Duration(seconds: <span class="num">3</span>), () =&gt; connect(token));
+  }
+
+  <span class="kw">void</span> <span class="fn">disconnect</span>() {
+    _reconnectTimer?.cancel();
+    _channel?.sink.close();
+    _isConnected = <span class="kw">false</span>;
+  }
+}</code></pre>
+    </section>
+
+    <!-- Friends -->
+    <section id="friends">
+        <h2>Amis</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/friends/request</span>
+            <p class="endpoint-desc">Envoyer une demande d'ami</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/friends/{friendship_id}/accept</span>
+            <p class="endpoint-desc">Accepter une demande</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/friends/{friendship_id}/reject</span>
+            <p class="endpoint-desc">Rejeter une demande</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/friends/list</span>
+            <p class="endpoint-desc">Liste d'amis</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/friends/pending</span>
+            <p class="endpoint-desc">Demandes en attente</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/friends/suggestions</span>
+            <p class="endpoint-desc">Suggestions d'amis</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/friends/block</span>
+            <p class="endpoint-desc">Bloquer un utilisateur</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/friends/{friend_id}</span>
+            <p class="endpoint-desc">Supprimer un ami</p>
+        </div>
+
+        <pre><code><span class="cm">// Envoyer une demande d'ami</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/friends/request'</span>, {
+  <span class="str">'addressee_id'</span>: userId,
+});
+
+<span class="cm">// Accepter une demande</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/friends/$friendshipId/accept'</span>, {});
+
+<span class="cm">// Liste d'amis</span>
+<span class="kw">final</span> friends = <span class="kw">await</span> api.get(<span class="str">'/api/v1/friends/list'</span>);
+
+<span class="cm">// Demandes en attente</span>
+<span class="kw">final</span> pending = <span class="kw">await</span> api.get(<span class="str">'/api/v1/friends/pending'</span>);
+
+<span class="cm">// Bloquer quelqu'un</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/friends/block'</span>, {<span class="str">'user_id'</span>: blockedId});</code></pre>
+    </section>
+
+    <!-- Stories -->
+    <section id="stories">
+        <h2>Stories Vocales</h2>
+        <p>Les stories sont des messages vocaux visibles par tous tes amis pendant <strong>24 heures</strong>.</p>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/stories</span>
+            <p class="endpoint-desc">Publier une story (multipart, 5-30s)</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/stories/friends</span>
+            <p class="endpoint-desc">Stories des amis</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/stories/mine</span>
+            <p class="endpoint-desc">Mes stories</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/stories/{story_id}/view</span>
+            <p class="endpoint-desc">Marquer une story comme vue</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/stories/{story_id}/audio</span>
+            <p class="endpoint-desc">Audio de la story (URL pre-signee)</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/stories/{story_id}/viewers</span>
+            <p class="endpoint-desc">Qui a vu ma story</p>
+        </div>
+
+        <table>
+            <tr><th>Parametre</th><th>Valeur</th></tr>
+            <tr><td>Duree min</td><td>5 secondes</td></tr>
+            <tr><td>Duree max</td><td>30 secondes</td></tr>
+            <tr><td>Expiration</td><td>24 heures</td></tr>
+        </table>
+
+        <pre><code><span class="cm">// Publier une story</span>
+<span class="kw">final</span> request = http.MultipartRequest(
+  <span class="str">'POST'</span>,
+  Uri.parse(<span class="str">'${ApiService.baseUrl}/api/v1/stories'</span>),
+);
+request.headers[<span class="str">'Authorization'</span>] = <span class="str">'Bearer $token'</span>;
+request.files.add(<span class="kw">await</span> http.MultipartFile.fromPath(<span class="str">'file'</span>, audioPath));
+<span class="kw">final</span> res = <span class="kw">await</span> request.send();
+
+<span class="cm">// Recuperer les stories des amis</span>
+<span class="kw">final</span> stories = <span class="kw">await</span> api.get(<span class="str">'/api/v1/stories/friends'</span>);</code></pre>
+    </section>
+
+    <!-- Reactions -->
+    <section id="reactions">
+        <h2>Reactions</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/reactions</span>
+            <p class="endpoint-desc">Reagir a un message vocal</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/reactions/message/{message_id}</span>
+            <p class="endpoint-desc">Reactions d'un message</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/reactions/{reaction_id}</span>
+            <p class="endpoint-desc">Supprimer une reaction</p>
+        </div>
+
+        <pre><code><span class="cm">// Reagir avec un emoji</span>
+<span class="kw">await</span> api.post(<span class="str">'/api/v1/reactions'</span>, {
+  <span class="str">'message_id'</span>: messageId,
+  <span class="str">'reaction_type'</span>: <span class="str">'fire'</span>,  <span class="cm">// fire, heart, laugh, shocked, skull, 100</span>
+});
+
+<span class="cm">// Voir les reactions d'un message</span>
+<span class="kw">final</span> reactions = <span class="kw">await</span> api.get(<span class="str">'/api/v1/reactions/message/$messageId'</span>);</code></pre>
+    </section>
+
+    <!-- Streaks -->
+    <section id="streaks">
+        <h2>Streaks</h2>
+        <p>Les streaks comptent les jours consecutifs d'echange vocal entre deux amis.</p>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/streaks</span>
+            <p class="endpoint-desc">Tous mes streaks</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/streaks/{friend_id}</span>
+            <p class="endpoint-desc">Streak avec un ami specifique</p>
+        </div>
+    </section>
+
+    <!-- Favorites -->
+    <section id="favorites">
+        <h2>Favoris</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/favorites</span>
+            <p class="endpoint-desc">Ajouter un favori (max 10)</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/favorites</span>
+            <p class="endpoint-desc">Liste des favoris</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <span class="endpoint-path">/api/v1/favorites/reorder</span>
+            <p class="endpoint-desc">Reordonner les favoris</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/favorites/{favorite_id}</span>
+            <p class="endpoint-desc">Supprimer un favori</p>
+        </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="notifications">
+        <h2>Notifications</h2>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/notifications</span>
+            <p class="endpoint-desc">Liste des notifications</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/notifications/{id}/read</span>
+            <p class="endpoint-desc">Marquer comme lue</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/notifications/read-all</span>
+            <p class="endpoint-desc">Tout marquer comme lu</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <span class="endpoint-path">/api/v1/notification-settings/{friend_id}</span>
+            <p class="endpoint-desc">Configurer les notifs par ami (mute, son custom)</p>
+        </div>
+    </section>
+
+    <!-- Users -->
+    <section id="users">
+        <h2>Utilisateurs</h2>
+
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/users/me</span>
+            <p class="endpoint-desc">Mon profil</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <span class="endpoint-path">/api/v1/users/me</span>
+            <p class="endpoint-desc">Modifier mon profil</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/users/search?q=marie&amp;limit=20</span>
+            <p class="endpoint-desc">Rechercher des utilisateurs</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/users/{user_id}</span>
+            <p class="endpoint-desc">Profil d'un utilisateur</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <span class="endpoint-path">/api/v1/users/me/privacy</span>
+            <p class="endpoint-desc">Parametres de confidentialite</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <span class="endpoint-path">/api/v1/users/me</span>
+            <p class="endpoint-desc">Supprimer mon compte (GDPR, grace period 30j)</p>
+        </div>
+    </section>
+
+    <!-- Recovery -->
+    <section id="recovery">
+        <h2>Recovery</h2>
+
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/recovery/password-reset/request</span>
+            <p class="endpoint-desc">Demander un reset de mot de passe</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/recovery/password-reset/confirm</span>
+            <p class="endpoint-desc">Confirmer le reset avec le token email</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <span class="endpoint-path">/api/v1/recovery/codes</span>
+            <p class="endpoint-desc">Voir ses codes de secours</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/recovery/codes/regenerate</span>
+            <p class="endpoint-desc">Regenerer les codes de secours</p>
+        </div>
+        <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <span class="endpoint-path">/api/v1/recovery/codes/login</span>
+            <p class="endpoint-desc">Login avec un code de secours (si 2FA perdu)</p>
+        </div>
+    </section>
+
+    <!-- Errors -->
+    <section id="errors">
+        <h2>Gestion des Erreurs</h2>
+
+        <table>
+            <tr><th>Code</th><th>Signification</th><th>Action</th></tr>
+            <tr><td><strong>200</strong></td><td>OK</td><td>-</td></tr>
+            <tr><td><strong>201</strong></td><td>Cree</td><td>-</td></tr>
+            <tr><td><strong>202</strong></td><td>2FA requis</td><td>Afficher ecran code TOTP</td></tr>
+            <tr><td><strong>400</strong></td><td>Requete invalide</td><td>Verifier les parametres</td></tr>
+            <tr><td><strong>401</strong></td><td>Non authentifie</td><td>Refresh token ou re-login</td></tr>
+            <tr><td><strong>403</strong></td><td>Interdit</td><td>Utilisateur banni ou pas autorise</td></tr>
+            <tr><td><strong>404</strong></td><td>Introuvable</td><td>Verifier l'ID</td></tr>
+            <tr><td><strong>409</strong></td><td>Conflit</td><td>Username/email deja pris</td></tr>
+            <tr><td><strong>422</strong></td><td>Validation</td><td>Champs invalides</td></tr>
+            <tr><td><strong>429</strong></td><td>Rate limit</td><td>Attendre, retry apres delay</td></tr>
+            <tr><td><strong>500</strong></td><td>Erreur serveur</td><td>Retry ou contacter admin</td></tr>
+        </table>
+
+        <h4>Flutter - Gestion globale des erreurs</h4>
+        <pre><code><span class="kw">class</span> <span class="type">ApiException</span> <span class="kw">implements</span> Exception {
+  <span class="kw">final int</span> statusCode;
+  <span class="kw">final</span> String message;
+
+  ApiException(<span class="kw">this</span>.statusCode, <span class="kw">this</span>.message);
+
+  <span class="kw">bool get</span> isUnauthorized =&gt; statusCode == <span class="num">401</span>;
+  <span class="kw">bool get</span> isRateLimited =&gt; statusCode == <span class="num">429</span>;
+  <span class="kw">bool get</span> is2FARequired =&gt; statusCode == <span class="num">202</span>;
+
+  @override
+  String <span class="fn">toString</span>() =&gt; <span class="str">'ApiException($statusCode): $message'</span>;
+}
+
+<span class="cm">// Utilisation dans un try/catch</span>
+<span class="kw">try</span> {
+  <span class="kw">await</span> authService.login(email, password);
+} <span class="kw">on</span> ApiException <span class="kw">catch</span> (e) {
+  <span class="kw">if</span> (e.is2FARequired) {
+    Navigator.push(context, TwoFactorScreen(tempToken: e.message));
+  } <span class="kw">else if</span> (e.isRateLimited) {
+    showSnackBar(<span class="str">'Trop de tentatives, reessaie dans 1 minute'</span>);
+  } <span class="kw">else</span> {
+    showSnackBar(e.message);
+  }
+}</code></pre>
+    </section>
+
+    <!-- Rate Limits -->
+    <section id="rate-limits">
+        <h2>Rate Limits</h2>
+
+        <table>
+            <tr><th>Endpoint</th><th>Limite</th></tr>
+            <tr><td>General (par defaut)</td><td>100 requetes/minute</td></tr>
+            <tr><td>Auth (login/register)</td><td>5 requetes/minute</td></tr>
+            <tr><td>Upload audio</td><td>20 requetes/minute</td></tr>
+            <tr><td>Operations sensibles</td><td>3 requetes/minute</td></tr>
+            <tr><td>Recherche</td><td>30 requetes/minute</td></tr>
+            <tr><td>Messages par minute</td><td>20 messages</td></tr>
+            <tr><td>Destinataires uniques/heure</td><td>50 max</td></tr>
+        </table>
+
+        <div class="alert alert-warning">
+            <strong>Anti-abus</strong>
+            Apres 10 violations dans la meme heure, le compte est automatiquement banni temporairement.
+        </div>
+    </section>
+
+    <!-- Complete App -->
+    <section id="complete-app">
+        <h2>App Flutter Complete - Flow</h2>
+
+        <div class="flow">
+            <span class="flow-item">1. Register/Login</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">2. Connect WebSocket</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">3. Load friends</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">4. Send vocal</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-item">5. Listen (ephemere)</span>
+        </div>
+
+        <h3>Initialisation de l'app</h3>
+        <pre><code><span class="cm">// lib/main.dart</span>
+
+<span class="kw">void</span> <span class="fn">main</span>() <span class="kw">async</span> {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  <span class="cm">// 1. Charger les tokens sauvegardes</span>
+  <span class="kw">final</span> api = ApiService();
+  <span class="kw">await</span> api.loadTokens();
+
+  <span class="cm">// 2. Verifier si l'utilisateur est connecte</span>
+  <span class="kw">final</span> isLoggedIn = api.accessToken != <span class="kw">null</span>;
+
+  <span class="cm">// 3. Si connecte, se connecter au WebSocket</span>
+  <span class="kw">if</span> (isLoggedIn) {
+    WebSocketService().connect(api.accessToken!);
+  }
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
+}
+
+<span class="kw">class</span> <span class="type">MyApp</span> <span class="kw">extends</span> StatelessWidget {
+  <span class="kw">final bool</span> isLoggedIn;
+  <span class="kw">const</span> MyApp({<span class="kw">required this</span>.isLoggedIn});
+
+  @override
+  Widget <span class="fn">build</span>(BuildContext context) {
+    <span class="kw">return</span> MaterialApp(
+      title: <span class="str">'VoiceApp'</span>,
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Color(<span class="num">0xFF7c3aed</span>),
+      ),
+      home: isLoggedIn ? HomeScreen() : LoginScreen(),
+    );
+  }
+}</code></pre>
+
+        <h3>Flow complet en detail</h3>
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <strong>Inscription/Connexion</strong>
+                <p><code class="inline-code">POST /api/v1/auth/register</code> ou <code class="inline-code">POST /api/v1/auth/login</code></p>
+                <p>Sauvegarder access_token + refresh_token en local.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <strong>Connexion WebSocket</strong>
+                <p><code class="inline-code">wss://matrix.voiceapp.be/ws?token=xxx</code></p>
+                <p>Recevoir presence, typing, notifications en temps reel.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <strong>Charger les amis</strong>
+                <p><code class="inline-code">GET /api/v1/friends/list</code></p>
+                <p>Afficher la liste d'amis avec leur statut en ligne.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <strong>Rechercher et ajouter des amis</strong>
+                <p><code class="inline-code">GET /api/v1/users/search?q=marie</code> puis <code class="inline-code">POST /api/v1/friends/request</code></p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <strong>Enregistrer et envoyer un vocal</strong>
+                <p>Utiliser le package <code class="inline-code">record</code> pour capturer l'audio, puis <code class="inline-code">POST /api/v1/messages/send</code> (multipart).</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+                <strong>Recevoir la notification (WebSocket)</strong>
+                <p>Le destinataire recoit un event <code class="inline-code">new_message</code> via WebSocket.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">7</div>
+            <div class="step-content">
+                <strong>Ecouter le message</strong>
+                <p><code class="inline-code">POST /api/v1/messages/{id}/listen</code> retourne une URL audio pre-signee (expire 5 min). Jouer avec <code class="inline-code">audioplayers</code>.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">8</div>
+            <div class="step-content">
+                <strong>2eme ecoute = suppression</strong>
+                <p>Apres la 2eme ecoute, le message est supprime definitivement du serveur.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">9</div>
+            <div class="step-content">
+                <strong>Publier une story</strong>
+                <p><code class="inline-code">POST /api/v1/stories</code> (5-30 secondes, visible 24h par les amis).</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">10</div>
+            <div class="step-content">
+                <strong>Reagir aux messages</strong>
+                <p><code class="inline-code">POST /api/v1/reactions</code> avec fire, heart, laugh, shocked, skull, ou 100.</p>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <strong>Documentation interactive</strong>
+            Pour tester tous les endpoints en live, utilise le Swagger UI : <a href="https://matrix.voiceapp.be/docs" style="color: var(--success);">https://matrix.voiceapp.be/docs</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div style="text-align: center; padding: 60px 0 40px; border-top: 1px solid var(--border); margin-top: 60px;">
+        <p style="color: var(--text-secondary);">VoiceApp Developer Tutorial &mdash; v5.0.0</p>
+        <p style="color: var(--text-secondary); font-size: 0.85em; margin-top: 5px;">
+            <a href="https://matrix.voiceapp.be/docs" style="color: var(--accent-light); text-decoration: none;">Swagger UI</a> &bull;
+            <a href="https://matrix.voiceapp.be/redoc" style="color: var(--accent-light); text-decoration: none;">ReDoc</a> &bull;
+            <a href="https://matrix.voiceapp.be/openapi.json" style="color: var(--accent-light); text-decoration: none;">OpenAPI JSON</a> &bull;
+            <a href="https://github.com/amavaljoh04-lang/voiceapp-server" style="color: var(--accent-light); text-decoration: none;">GitHub Server</a> &bull;
+            <a href="https://github.com/amavaljoh04-lang/voiceapp-assets" style="color: var(--accent-light); text-decoration: none;">Assets</a>
+        </p>
+        <p style="color: var(--text-secondary); font-size: 0.8em; margin-top: 15px;">&copy; 2024-2026 VoiceApp. Tous droits reserves. Fait en Belgique.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
