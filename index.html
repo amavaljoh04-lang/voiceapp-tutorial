@@ -388,7 +388,7 @@
     <div class="nav-section">Autres</div>
     <a href="#notifications">Notifications</a>
     <a href="#users">Utilisateurs</a>
-    <a href="#recovery">Recovery</a>
+    <a href="#recovery">Recuperation de Compte</a>
     <a href="#errors">Gestion erreurs</a>
     <a href="#rate-limits">Rate Limits</a>
     <a href="#complete-app">App complete</a>
@@ -1558,32 +1558,240 @@ request.files.add(<span class="kw">await</span> http.MultipartFile.fromPath(<spa
 
     <!-- Recovery -->
     <section id="recovery">
-        <h2>Recovery</h2>
+        <h2>Recuperation de Compte</h2>
 
+        <p>Le systeme de recuperation permet de reinitialiser le mot de passe via un <strong>code 6 chiffres</strong> envoye par email, et de se connecter avec des codes de secours si le 2FA est perdu.</p>
+
+        <h3>1. Demander un reset de mot de passe</h3>
         <div class="endpoint">
             <span class="method method-post">POST</span>
             <span class="endpoint-path">/api/v1/recovery/password-reset/request</span>
-            <p class="endpoint-desc">Demander un reset de mot de passe</p>
+            <p class="endpoint-desc">Envoie un code 6 chiffres par email pour reinitialiser le mot de passe</p>
         </div>
+        <table>
+            <tr><th>Parametre</th><th>Type</th><th>Description</th></tr>
+            <tr><td><code>email</code></td><td>string</td><td>Email du compte</td></tr>
+        </table>
+        <pre><code class="language-bash"># curl
+curl -X POST https://matrix.voiceapp.be/api/v1/recovery/password-reset/request \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com"}'
+
+# Reponse (toujours 200 pour eviter l'enumeration d'emails) :
+# {"message": "Si l'email existe, un code de reinitialisation a ete envoye"}</code></pre>
+        <pre><code class="language-dart">// Flutter - Demander un reset
+Future&lt;void&gt; requestPasswordReset(String email) async {
+  final response = await ApiService().post(
+    '/api/v1/recovery/password-reset/request',
+    {'email': email},
+  );
+  // Toujours succes (anti-enumeration)
+  // Afficher ecran de saisie du code 6 chiffres
+}</code></pre>
+        <div class="alert alert-info">
+            L'utilisateur recoit un email avec un <strong>code 6 chiffres</strong> a entrer dans l'app. Le code expire apres 30 minutes. La reponse est toujours positive pour eviter l'enumeration des emails.
+        </div>
+
+        <h3>2. Confirmer le reset avec le code</h3>
         <div class="endpoint">
             <span class="method method-post">POST</span>
             <span class="endpoint-path">/api/v1/recovery/password-reset/confirm</span>
-            <p class="endpoint-desc">Confirmer le reset avec le token email</p>
+            <p class="endpoint-desc">Reinitialiser le mot de passe avec le code recu par email</p>
         </div>
+        <table>
+            <tr><th>Parametre</th><th>Type</th><th>Description</th></tr>
+            <tr><td><code>code</code></td><td>string</td><td>Code 6 chiffres recu par email</td></tr>
+            <tr><td><code>email</code></td><td>string</td><td>Email du compte</td></tr>
+            <tr><td><code>new_password</code></td><td>string</td><td>Nouveau mot de passe (8+ chars, maj, min, chiffre)</td></tr>
+        </table>
+        <pre><code class="language-bash"># curl - Confirmer avec le code
+curl -X POST https://matrix.voiceapp.be/api/v1/recovery/password-reset/confirm \
+  -H "Content-Type: application/json" \
+  -d '{"code":"482951","email":"user@example.com","new_password":"NouveauMdp123!"}'
+
+# Reponse succes :
+# {"message": "Mot de passe reinitialise avec succes"}
+
+# Reponse erreur (code invalide/expire) :
+# {"detail": "Code ou token invalide ou expire"}</code></pre>
+        <pre><code class="language-dart">// Flutter - Confirmer le reset avec le code
+Future&lt;bool&gt; confirmPasswordReset(String email, String code, String newPassword) async {
+  try {
+    final response = await http.post(
+      Uri.parse('${ApiService.baseUrl}/api/v1/recovery/password-reset/confirm'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'code': code,
+        'email': email,
+        'new_password': newPassword,
+      }),
+    );
+    if (response.statusCode == 200) {
+      // Succes ! Rediriger vers l'ecran de login
+      return true;
+    } else {
+      // Code invalide ou expire
+      final error = jsonDecode(response.body);
+      throw Exception(error['detail'] ?? 'Erreur inconnue');
+    }
+  } catch (e) {
+    rethrow;
+  }
+}
+
+// Flutter - Ecran de saisie du code (widget)
+class PasswordResetCodeScreen extends StatefulWidget {
+  final String email;
+  const PasswordResetCodeScreen({required this.email});
+
+  @override
+  State&lt;PasswordResetCodeScreen&gt; createState() => _PasswordResetCodeScreenState();
+}
+
+class _PasswordResetCodeScreenState extends State&lt;PasswordResetCodeScreen&gt; {
+  final _codeController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future&lt;void&gt; _submit() async {
+    setState(() => _isLoading = true);
+    try {
+      final success = await confirmPasswordReset(
+        widget.email,
+        _codeController.text.trim(),
+        _passwordController.text,
+      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Mot de passe reinitialise !')),
+        );
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Code invalide ou expire')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Reinitialisation')),
+      body: Padding(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Text('Un code 6 chiffres a ete envoye a ${widget.email}'),
+            SizedBox(height: 24),
+            TextField(
+              controller: _codeController,
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              decoration: InputDecoration(labelText: 'Code 6 chiffres'),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Nouveau mot de passe'),
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _submit,
+              child: _isLoading
+                ? CircularProgressIndicator()
+                : Text('Reinitialiser'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre>
+        <div class="alert alert-warning">
+            <strong>Securite :</strong> Apres un reset reussi, <strong>toutes les sessions actives sont revoquees</strong>. L'utilisateur doit se reconnecter sur tous ses appareils. Le rate limit est de 3 tentatives/minute pour eviter le brute-force du code.
+        </div>
+
+        <h3>3. Flow complet de recuperation dans l'app</h3>
+        <div class="alert alert-info">
+            <strong>Etape 1 :</strong> Ecran "Mot de passe oublie ?" &rarr; L'utilisateur entre son email<br>
+            <strong>Etape 2 :</strong> Appel <code>POST /recovery/password-reset/request</code> &rarr; Afficher "Code envoye"<br>
+            <strong>Etape 3 :</strong> Ecran de saisie du code 6 chiffres + nouveau mot de passe<br>
+            <strong>Etape 4 :</strong> Appel <code>POST /recovery/password-reset/confirm</code> avec <code>{code, email, new_password}</code><br>
+            <strong>Etape 5 :</strong> Si succes &rarr; Rediriger vers l'ecran de login avec message "Mot de passe reinitialise"<br>
+            <strong>Etape 6 :</strong> Si erreur &rarr; Afficher "Code invalide ou expire" avec option de renvoyer
+        </div>
+
+        <h3>4. Codes de secours (Recovery Codes)</h3>
+        <p>Les codes de secours permettent de se connecter si le 2FA (TOTP) est perdu. 10 codes sont generes, chaque code est utilisable une seule fois.</p>
+
         <div class="endpoint">
             <span class="method method-get">GET</span>
             <span class="endpoint-path">/api/v1/recovery/codes</span>
-            <p class="endpoint-desc">Voir ses codes de secours</p>
+            <p class="endpoint-desc">Voir ses codes de secours (authentifie)</p>
         </div>
+        <pre><code class="language-bash"># Voir les codes de secours
+curl -H "Authorization: Bearer ACCESS_TOKEN" \
+  https://matrix.voiceapp.be/api/v1/recovery/codes
+
+# Reponse :
+# {"codes": [{"code": "A1B2C3D4", "is_used": false}, ...], "total": 10, "unused": 8}</code></pre>
+
         <div class="endpoint">
             <span class="method method-post">POST</span>
             <span class="endpoint-path">/api/v1/recovery/codes/regenerate</span>
-            <p class="endpoint-desc">Regenerer les codes de secours</p>
+            <p class="endpoint-desc">Regenerer 10 nouveaux codes (supprime les anciens)</p>
         </div>
+        <pre><code class="language-bash"># Regenerer les codes
+curl -X POST -H "Authorization: Bearer ACCESS_TOKEN" \
+  https://matrix.voiceapp.be/api/v1/recovery/codes/regenerate
+
+# Reponse :
+# {"codes": ["A1B2C3D4", "E5F6G7H8", ...], "message": "Codes de recuperation regeneres."}</code></pre>
+
         <div class="endpoint">
             <span class="method method-post">POST</span>
             <span class="endpoint-path">/api/v1/recovery/codes/login</span>
             <p class="endpoint-desc">Login avec un code de secours (si 2FA perdu)</p>
+        </div>
+        <table>
+            <tr><th>Parametre</th><th>Type</th><th>Description</th></tr>
+            <tr><td><code>login</code></td><td>string</td><td>Email ou username</td></tr>
+            <tr><td><code>recovery_code</code></td><td>string</td><td>Un des 10 codes de secours</td></tr>
+            <tr><td><code>device_id</code></td><td>string?</td><td>ID appareil (optionnel)</td></tr>
+        </table>
+        <pre><code class="language-bash"># Login avec code de secours
+curl -X POST https://matrix.voiceapp.be/api/v1/recovery/codes/login \
+  -H "Content-Type: application/json" \
+  -d '{"login":"user@example.com","recovery_code":"A1B2C3D4"}'
+
+# Reponse :
+# {"access_token": "...", "refresh_token": "...", "user_id": "...", "message": "Connexion avec code de recuperation reussie"}</code></pre>
+        <pre><code class="language-dart">// Flutter - Login avec code de secours
+Future&lt;Map&lt;String, dynamic&gt;&gt; loginWithRecoveryCode(
+  String login, String recoveryCode, {String? deviceId}
+) async {
+  final response = await http.post(
+    Uri.parse('${ApiService.baseUrl}/api/v1/recovery/codes/login'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'login': login,
+      'recovery_code': recoveryCode,
+      if (deviceId != null) 'device_id': deviceId,
+    }),
+  );
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    await ApiService().saveTokens(data['access_token'], data['refresh_token']);
+    return data;
+  }
+  throw Exception('Code de recuperation invalide');
+}</code></pre>
+        <div class="alert alert-warning">
+            <strong>Important :</strong> Chaque code de secours est <strong>utilisable une seule fois</strong>. Apres utilisation, il est marque comme "used". Conseillez aux utilisateurs de conserver ces codes en lieu sur et de les regenerer regulierement.
         </div>
     </section>
 
